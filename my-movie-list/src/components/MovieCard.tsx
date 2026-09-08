@@ -5,20 +5,27 @@ type movie = {
   title: string;
   year: number;
   genre: string;
+  onClick?: () => void;
 };
 
 export const MovieCard = (props: movie) => {
   const [watched, setWatched] = useState(false);
 
+  function handleButtonClick() {
+    setWatched(!watched);
+    props.onClick?.();
+  }
+
   return (
     <div className={watched ? "watched" : ""}>
-      <p key={props.key}>
+      <p>
+        {/* key={props.key} */}
         {props.title} - {props.year}
         &nbsp;
         {props.genre}
       </p>
-      <button onClick={() => setWatched(!watched)}>
-        {watched ? "Obejrzany" : "Obejrznij"}
+      <button onClick={() => handleButtonClick()}>
+        {watched ? "Obejrznięty" : "Obejrznij"}
       </button>
     </div>
   );
