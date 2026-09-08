@@ -11,33 +11,56 @@ type movie = {
 };
 
 function App() {
+  // useState<type>(initial value)
   const [watchedList, setWatchedList] = useState(Array<string>);
+  const [moviesFilter, setMoviesFilter] = useState<boolean | null>(null);
+  const [moviesList, setMoviesList] = useState(movies);
 
   function handleMovieWatch(element: movie) {
-    console.log(element);
     if (watchedList.includes(element.title)) {
       setWatchedList(watchedList.filter((movie) => movie !== element.title));
     } else setWatchedList([...watchedList, element.title]);
   }
 
+  function clearMovies() {
+    setMoviesList([]);
+    setMoviesFilter(null);
+    setWatchedList([]);
+  }
+
+  /**
+   *
+   * @param type true-watched, false-unwatched, null-all
+   */
   return (
     <>
       <p>
-        Obejrzane: {watchedList.length}/{movies.length}
+        Obejrzane: {watchedList.length}/{moviesList.length}
       </p>
-      {movies.map((element, key) => {
-        return (
-          <MovieCard
-            key={key}
-            genre={element.genre}
-            title={element.title}
-            year={element.year}
-            onClick={() => {
-              handleMovieWatch(element);
-            }}
-          />
-        );
-      })}
+      Filtruj: <button onClick={() => setMoviesFilter(null)}>wszystkie</button>
+      <button onClick={() => setMoviesFilter(true)}>obejrzane</button>
+      <button onClick={() => setMoviesFilter(false)}>nieobejrzane</button>
+      {"[ <=> ]"}
+      <button onClick={() => clearMovies()}>wyczyść wszystkie</button>
+      {moviesList.length >= 0
+        ? moviesList.map((element, key) => {
+            if (moviesFilter !== null)
+              if (moviesFilter !== !watchedList.includes(element.title)) return;
+
+            return (
+              <MovieCard
+                key={key}
+                genre={element.genre}
+                title={element.title}
+                year={element.year}
+                onClick={() => {
+                  handleMovieWatch(element);
+                }}
+              />
+            );
+          })
+        : "No movies found"}
+      {/* movies list render (map)*/}
     </>
   );
 }
