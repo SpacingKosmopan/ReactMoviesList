@@ -1,16 +1,18 @@
 import "./App.css";
 import movies from "./data/movies.json";
+import { MovieCard } from "./components/MovieCard.tsx";
 
 function App() {
   return (
     <>
       {movies.map((element, key) => {
         return (
-          <p key={key}>
-            {element.title} - {element.year}
-            &nbsp;
-            {element.genre}
-          </p>
+          <MovieCard
+            key={key}
+            genre={element.genre}
+            title={element.title}
+            year={element.year}
+          />
         );
       })}
     </>
