@@ -6,6 +6,7 @@ type movie = {
   year: number;
   genre: string;
   onClick?: () => void;
+  rating?: number;
 };
 
 export const MovieCard = (props: movie) => {
@@ -27,6 +28,7 @@ export const MovieCard = (props: movie) => {
       <button onClick={() => handleButtonClick()}>
         {watched ? "Obejrznięty" : "Obejrznij"}
       </button>
+      {props.rating && <p>Ocena: {props.rating}</p>}
     </div>
   );
 };

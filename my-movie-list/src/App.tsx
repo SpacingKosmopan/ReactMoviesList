@@ -8,11 +8,12 @@ type movie = {
   title: string;
   year: number;
   genre: string;
+  rating?: number;
 };
 
 function App() {
   // useState<type>(initial value)
-  const [watchedList, setWatchedList] = useState(Array<string>);
+  const [watchedList, setWatchedList] = useState<string[]>([]);
   const [moviesFilter, setMoviesFilter] = useState<boolean | null>(null);
   const [moviesList, setMoviesList] = useState(movies);
 
@@ -26,6 +27,27 @@ function App() {
     setMoviesList([]);
     setMoviesFilter(null);
     setWatchedList([]);
+  }
+
+  function setRating(movieTitle: string, rating: number) {
+    console.log("rating...");
+    if (rating < 0 || rating > 5) {
+      console.error("Wrong rating");
+      return;
+    }
+    setMoviesList(
+      moviesList.map((movie) =>
+        movie.title === movieTitle
+          ? {
+              id: movie.id,
+              title: movie.title,
+              genre: movie.genre,
+              year: movie.year,
+              rating: rating,
+            }
+          : movie,
+      ),
+    );
   }
 
   /**
@@ -48,15 +70,20 @@ function App() {
               if (moviesFilter !== !watchedList.includes(element.title)) return;
 
             return (
-              <MovieCard
-                key={key}
-                genre={element.genre}
-                title={element.title}
-                year={element.year}
-                onClick={() => {
-                  handleMovieWatch(element);
-                }}
-              />
+              <>
+                <MovieCard
+                  key={key}
+                  genre={element.genre}
+                  title={element.title}
+                  year={element.year}
+                  onClick={() => {
+                    handleMovieWatch(element);
+                  }}
+                />
+                <button onClick={() => setRating(element.title, 5)}>
+                  modyfikuj jeden element
+                </button>
+              </>
             );
           })
         : "No movies found"}
