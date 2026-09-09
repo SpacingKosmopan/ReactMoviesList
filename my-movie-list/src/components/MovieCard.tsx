@@ -1,15 +1,16 @@
 import { useState } from "react";
 
-type movie = {
-  key: number;
+type Movie = {
+  id: number;
   title: string;
   year: number;
   genre: string;
   onClick?: () => void;
   rating?: number;
+  watched: boolean;
 };
 
-export const MovieCard = (props: movie) => {
+export const MovieCard = (props: Movie) => {
   const [watched, setWatched] = useState(false);
 
   function handleButtonClick() {
@@ -18,17 +19,33 @@ export const MovieCard = (props: movie) => {
   }
 
   return (
-    <div className={watched ? "watched" : ""}>
-      <p>
-        {/* key={props.key} */}
+    <div className={watched || props.watched ? "watched" : ""}>
+      <h3>
         {props.title} - {props.year}
-        &nbsp;
-        {props.genre}
+      </h3>
+      <p>
+        Gatunek: <b>{props.genre}</b>
       </p>
-      <button onClick={() => handleButtonClick()}>
-        {watched ? "Obejrznięty" : "Obejrznij"}
+      <button
+        onClick={() => handleButtonClick()}
+        className={watched || props.watched ? "watched-movie-btn" : ""}
+        title="Cancel"
+      >
+        {watched || props.watched ? "Obejrznięty" : "🎥 Obejrznij"}
       </button>
-      {props.rating && <p>Ocena: {props.rating}</p>}
+      {
+        <p>
+          Ocena:{" "}
+          {props.rating
+            ? props.rating +
+              (props.rating === 1
+                ? " banan"
+                : props.rating < 5
+                  ? " banany"
+                  : " bananów")
+            : "brak"}
+        </p>
+      }
     </div>
   );
 };
