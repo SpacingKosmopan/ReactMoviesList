@@ -85,7 +85,21 @@ button {
   border: none;
   transition: 0.1s ease-in-out;
   padding: 5px 25px;
+  position: relative;
+  overflow: visible;
 }
+
+/*button::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 100%;
+  display: block;
+  background-color: brown;
+}*/
 
 button:hover:not(.watched-movie-btn) {
   background-color: rgb(251, 226, 113);

@@ -97,6 +97,13 @@ function App() {
     );
   }
 
+  const moviesToRender =
+    moviesFilter === null
+      ? moviesList
+      : moviesList.filter(
+          (movie) => watchedList.includes(movie.title) === moviesFilter,
+        );
+
   /**
    *
    * @param type true-watched, false-unwatched, null-all
@@ -106,7 +113,6 @@ function App() {
       <h1 id="site-name">
         Welcome to <span>BANANA MOVIES</span> 🍌
       </h1>
-
       <div id="filter-block">
         <p id="filter-name">FILTER</p>
         <div className="details-dropdown-buttons-wrapper">
@@ -115,17 +121,16 @@ function App() {
           <button onClick={() => setMoviesFilter(false)}>nieobejrzane</button>
         </div>
       </div>
-
       <p>
         Obejrzane: {watchedList.length}/{moviesList.length}
       </p>
       <button onClick={() => clearMovies()}>usuń wszystkie filmy</button>
       <br />
-      {moviesList.length > 0
-        ? moviesList.map((element, key) => {
-            if (moviesFilter !== null)
-              if (moviesFilter !== watchedList.includes(element.title)) return;
 
+      {moviesToRender.length === 0
+        ? "Nie znalezion filmów"
+        : moviesToRender.map((element, key) => {
+            const watched = watchedList.includes(element.title);
             return (
               <div key={key}>
                 <MovieCard
@@ -137,7 +142,7 @@ function App() {
                     handleMovieWatch(element);
                   }}
                   rating={element?.rating || undefined}
-                  watched={watchedList.includes(element.title)}
+                  watched={watched}
                 />
 
                 <div className="banana-ratings">
@@ -149,8 +154,7 @@ function App() {
                 <hr />
               </div>
             );
-          })
-        : "No movies found"}
+          })}
     </>
   );
 }
