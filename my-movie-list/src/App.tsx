@@ -3,6 +3,11 @@ import movies from "./data/movies.json";
 import { MovieCard } from "./components/MovieCard.tsx";
 import { useState } from "react";
 
+// forms
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 type Movie = {
   id: number;
   title: string;
@@ -16,6 +21,8 @@ function App() {
   const [watchedList, setWatchedList] = useState<string[]>([]);
   const [moviesFilter, setMoviesFilter] = useState<boolean | null>(null);
   const [moviesList, setMoviesList] = useState<Movie[]>(movies);
+
+  const [formVisibility, setFormVisibility] = useState<boolean>(false);
 
   function handleMovieWatch(element: Movie) {
     setWatchedList((currentList) =>
@@ -104,6 +111,45 @@ function App() {
           (movie) => watchedList.includes(movie.title) === moviesFilter,
         );
 
+  // * FORM * //
+  const newMovieSchema = yup.object().shape({
+    title: yup.string().required("Musisz podać tytuł filmu"),
+    year: yup
+      .number()
+      .integer("Rok musi być cyfrą")
+      .positive("Rok nie może być ujemny")
+      .required("Musisz podać rok"),
+    genre: yup.string().required("Musisz podać gatunek"),
+  });
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(newMovieSchema),
+  });
+
+  function handleNewMovieFormSubmit(data: {
+    title: string;
+    year: number;
+    genre: string;
+  }) {
+    movies.push({
+      id: movies.length + 1,
+      title: data.title,
+      year: data.year,
+      genre: data.genre,
+    });
+    setFormVisibility(false);
+    handleFormReset();
+  }
+
+  const handleFormReset = () => {
+    reset();
+  };
+
   /**
    *
    * @param type true-watched, false-unwatched, null-all
@@ -114,7 +160,7 @@ function App() {
         Welcome to <span>BANANA MOVIES</span> 🍌
       </h1>
       <div id="filter-block">
-        <p id="filter-name">FILTER</p>
+        <p className="header-name">FILTER</p>
         <div className="details-dropdown-buttons-wrapper">
           <button onClick={() => setMoviesFilter(null)}>wszystkie</button>
           <button onClick={() => setMoviesFilter(true)}>obejrzane</button>
@@ -125,6 +171,7 @@ function App() {
         Obejrzane: {watchedList.length}/{moviesList.length}
       </p>
       <button onClick={() => clearMovies()}>usuń wszystkie filmy</button>
+      <button onClick={() => setFormVisibility(true)}>dodaj nowy film</button>
       <br />
 
       {moviesToRender.length === 0
@@ -155,6 +202,43 @@ function App() {
               </div>
             );
           })}
+
+      {formVisibility && (
+        <div className="new-movie-form-container">
+          <p className="header-name">Dodaj nowy film</p>
+
+          <form onSubmit={handleSubmit(handleNewMovieFormSubmit)}>
+            <label htmlFor="title">Tytuł: </label>
+            <input
+              type="text"
+              id="movie-title-input"
+              placeholder="Tytuł..."
+              {...register("title")}
+            />
+            {<p>{errors.title?.message}</p>}
+
+            <label htmlFor="year">Rok produkcji: </label>
+            <input
+              type="number"
+              id="movie-year-input"
+              placeholder="Rok produkcji..."
+              {...register("year")}
+            />
+            {<p>{errors.year?.message}</p>}
+
+            <label htmlFor="genre">Gatunek: </label>
+            <input
+              type="text"
+              id="movie-genre-input"
+              placeholder="Gatunek..."
+              {...register("genre")}
+            />
+            {<p>{errors.genre?.message}</p>}
+            <hr />
+            <button type="submit">Prześlij</button>
+          </form>
+        </div>
+      )}
     </>
   );
 }
