@@ -246,7 +246,6 @@ function App() {
                 <p>{genre}</p>
               ))}
             </div>
-            {<p className="error-p">{errors.genre?.message}</p>}
             <hr />
             <button type="submit">Prześlij</button>
             <button onClick={cancelFormHandler}>Anuluj</button>
