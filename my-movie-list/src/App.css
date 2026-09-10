@@ -33,6 +33,22 @@ body {
   flex-direction: column;
 }
 
+#movies-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 10px;
+}
+
+#movies-container > div {
+  transition: 0.1s ease-in-out;
+  padding: 10px;
+}
+
+#movies-container > div:hover {
+  background-color: #0004;
+}
+
 .header-name {
   border: 1px solid rgb(139, 122, 14);
   height: 30px;
@@ -124,4 +140,42 @@ button:hover:not(.watched-movie-btn) {
   width: calc(100vw - 100px);
   text-align: center;
   padding: 50px;
+}
+
+input {
+  clip-path: polygon(
+    1% 50%,
+    15px 0%,
+    calc(100% - 15px) 0%,
+    99% 50%,
+    calc(100% - 15px) 100%,
+    15px 100%
+  );
+  background-color: rgb(255, 236, 152);
+  border: none;
+  padding: 5px 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  outline: none;
+  transition: 0.1s ease-in-out;
+  width: 200px;
+  text-align: center;
+}
+
+input:focus {
+  background-color: rgb(251, 226, 113);
+}
+
+label {
+  color: white;
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.15rem;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.error-p {
+  color: rgb(228, 0, 0);
 }

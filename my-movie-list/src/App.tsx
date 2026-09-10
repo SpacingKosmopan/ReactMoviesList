@@ -116,7 +116,8 @@ function App() {
     title: yup.string().required("Musisz podać tytuł filmu"),
     year: yup
       .number()
-      .integer("Rok musi być cyfrą")
+      .typeError("Rok musi być cyfrą")
+      .integer("Rok musi być liczbą całkowitą")
       .positive("Rok nie może być ujemny")
       .required("Musisz podać rok"),
     genre: yup.string().required("Musisz podać gatunek"),
@@ -150,6 +151,11 @@ function App() {
     reset();
   };
 
+  function cancelFormHandler() {
+    setFormVisibility(false);
+    handleFormReset();
+  }
+
   /**
    *
    * @param type true-watched, false-unwatched, null-all
@@ -174,34 +180,34 @@ function App() {
       <button onClick={() => setFormVisibility(true)}>dodaj nowy film</button>
       <br />
 
-      {moviesToRender.length === 0
-        ? "Nie znalezion filmów"
-        : moviesToRender.map((element, key) => {
-            const watched = watchedList.includes(element.title);
-            return (
-              <div key={key}>
-                <MovieCard
-                  id={key}
-                  genre={element.genre}
-                  title={element.title}
-                  year={element.year}
-                  onClick={() => {
-                    handleMovieWatch(element);
-                  }}
-                  rating={element?.rating || undefined}
-                  watched={watched}
-                />
+      <div id="movies-container">
+        {moviesToRender.length === 0
+          ? "Nie znaleziono filmów"
+          : moviesToRender.map((element, key) => {
+              const watched = watchedList.includes(element.title);
+              return (
+                <div key={key}>
+                  <MovieCard
+                    id={key}
+                    genre={element.genre}
+                    title={element.title}
+                    year={element.year}
+                    onClick={() => {
+                      handleMovieWatch(element);
+                    }}
+                    rating={element?.rating || undefined}
+                    watched={watched}
+                  />
 
-                <div className="banana-ratings">
-                  {Array.from({ length: 5 }, (_, index) =>
-                    renderBananaRatings(element, index + 1),
-                  )}
+                  <div className="banana-ratings">
+                    {Array.from({ length: 5 }, (_, index) =>
+                      renderBananaRatings(element, index + 1),
+                    )}
+                  </div>
                 </div>
-
-                <hr />
-              </div>
-            );
-          })}
+              );
+            })}
+      </div>
 
       {formVisibility && (
         <div className="new-movie-form-container">
@@ -215,7 +221,7 @@ function App() {
               placeholder="Tytuł..."
               {...register("title")}
             />
-            {<p>{errors.title?.message}</p>}
+            {<p className="error-p">{errors.title?.message}</p>}
 
             <label htmlFor="year">Rok produkcji: </label>
             <input
@@ -224,7 +230,7 @@ function App() {
               placeholder="Rok produkcji..."
               {...register("year")}
             />
-            {<p>{errors.year?.message}</p>}
+            {<p className="error-p">{errors.year?.message}</p>}
 
             <label htmlFor="genre">Gatunek: </label>
             <input
@@ -233,9 +239,10 @@ function App() {
               placeholder="Gatunek..."
               {...register("genre")}
             />
-            {<p>{errors.genre?.message}</p>}
+            {<p className="error-p">{errors.genre?.message}</p>}
             <hr />
             <button type="submit">Prześlij</button>
+            <button onClick={cancelFormHandler}>Anuluj</button>
           </form>
         </div>
       )}
