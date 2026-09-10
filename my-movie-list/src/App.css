@@ -156,7 +156,7 @@ input {
   padding: 5px 25px;
   font-size: 1rem;
   font-weight: 500;
-  color: #333;
+  color: black;
   outline: none;
   transition: 0.1s ease-in-out;
   width: 200px;
@@ -178,4 +178,13 @@ label {
 
 .error-p {
   color: rgb(228, 0, 0);
+}
+
+#genres-container {
+  border: 1px solid brown;
+  border-radius: 10px;
+  width: 20rem;
+  margin: 10px auto;
+  background-color: rgb(255, 236, 152);
+  color: black;
 }

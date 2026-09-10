@@ -12,7 +12,7 @@ type Movie = {
   id: number;
   title: string;
   year: number;
-  genre: string;
+  genre: string[];
   rating?: number;
 };
 
@@ -23,6 +23,8 @@ function App() {
   const [moviesList, setMoviesList] = useState<Movie[]>(movies);
 
   const [formVisibility, setFormVisibility] = useState<boolean>(false);
+  const [genreInput, setGenreInput] = useState<string>("");
+  const [newMovieGenres, setNewMovieGenres] = useState<string[]>([]);
 
   function handleMovieWatch(element: Movie) {
     setWatchedList((currentList) =>
@@ -44,29 +46,12 @@ function App() {
       return;
     }
 
-    setMoviesList(
-      /*❌ moviesList.map((movie) =>
-        movie.title === movieTitle
-          ? {
-              id: movie.id,
-              title: movie.title,
-              genre: movie.genre,
-              year: movie.year,
-              rating: rating,
-            }
-          : movie,
-      ),*/
-
-      /*(currentMovies) =>
-        currentMovies.map((movie) =>
-          movie.title === movieTitle ? { ...movie, rating } : movie,
-        */
-      (currentMovies) =>
-        currentMovies.map((movie) => {
-          if (movie.title === movieTitle) {
-            return { ...movie, rating };
-          } else return movie;
-        }),
+    setMoviesList((currentMovies) =>
+      currentMovies.map((movie) => {
+        if (movie.title === movieTitle) {
+          return { ...movie, rating };
+        } else return movie;
+      }),
     );
   }
 
@@ -120,7 +105,6 @@ function App() {
       .integer("Rok musi być liczbą całkowitą")
       .positive("Rok nie może być ujemny")
       .required("Musisz podać rok"),
-    genre: yup.string().required("Musisz podać gatunek"),
   });
 
   const {
@@ -135,13 +119,18 @@ function App() {
   function handleNewMovieFormSubmit(data: {
     title: string;
     year: number;
-    genre: string;
+    genre: string[];
   }) {
+    console.log(`Adding new movie... `, data);
+    if (newMovieGenres.length === 0) {
+      alert("Musisz dodać co najmniej jeden gatunek");
+      return;
+    }
     movies.push({
       id: movies.length + 1,
       title: data.title,
       year: data.year,
-      genre: data.genre,
+      genre: newMovieGenres,
     });
     setFormVisibility(false);
     handleFormReset();
@@ -149,6 +138,8 @@ function App() {
 
   const handleFormReset = () => {
     reset();
+    setNewMovieGenres([]);
+    setGenreInput("");
   };
 
   function cancelFormHandler() {
@@ -156,8 +147,11 @@ function App() {
     handleFormReset();
   }
 
+  function addGenreToList() {
+    setNewMovieGenres((current) => [...current, genreInput]);
+  }
+
   /**
-   *
    * @param type true-watched, false-unwatched, null-all
    */
   return (
@@ -232,13 +226,26 @@ function App() {
             />
             {<p className="error-p">{errors.year?.message}</p>}
 
-            <label htmlFor="genre">Gatunek: </label>
+            <label htmlFor="genre">Gatunki: </label>
+
             <input
               type="text"
               id="movie-genre-input"
               placeholder="Gatunek..."
-              {...register("genre")}
+              value={genreInput}
+              onInput={(e) => {
+                setGenreInput(e.target.value);
+              }}
             />
+            <button onClick={addGenreToList} type="button">
+              +
+            </button>
+            <div id="genres-container">
+              <b>Lista gatunków:</b>
+              {newMovieGenres.map((genre) => (
+                <p>{genre}</p>
+              ))}
+            </div>
             {<p className="error-p">{errors.genre?.message}</p>}
             <hr />
             <button type="submit">Prześlij</button>

@@ -4,7 +4,7 @@ type Movie = {
   id: number;
   title: string;
   year: number;
-  genre: string;
+  genre: string[];
   onClick?: () => void;
   rating?: number;
   watched: boolean;
@@ -21,10 +21,10 @@ export const MovieCard = (props: Movie) => {
   return (
     <div className={watched || props.watched ? "watched" : ""}>
       <h3>
-        {props.title} - {props.year}
+        {props.title} - {props.year}r.
       </h3>
       <p>
-        Gatunek: <b>{props.genre}</b>
+        Gatunek: <b>{props.genre.join(", ")}</b>
       </p>
       <button
         onClick={() => handleButtonClick()}
